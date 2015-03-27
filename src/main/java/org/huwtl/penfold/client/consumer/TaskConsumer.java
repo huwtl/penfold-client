@@ -34,6 +34,8 @@ public class TaskConsumer
             .withWaitStrategy(fixedWait(10, SECONDS)) //
             .withStopStrategy(stopAfterAttempt(100));
 
+    private static final int RETRY_DELAY_IN_MINUTES = 20;
+
     private final TaskQueryService taskQueryService;
 
     private final TaskStoreService taskStoreService;
@@ -80,7 +82,7 @@ public class TaskConsumer
         }
         else if (result == RETRY)
         {
-            retry(task, () -> taskStoreService.reschedule(task, dateTimeSource.now().plusMinutes(20), Optional.of(DEFAULT_FAILURE_REASON)));
+            retry(task, () -> taskStoreService.reschedule(task, dateTimeSource.now().plusMinutes(RETRY_DELAY_IN_MINUTES), Optional.of(DEFAULT_FAILURE_REASON)));
         }
         else
         {
@@ -96,7 +98,7 @@ public class TaskConsumer
         }
         catch (final Exception e)
         {
-            LOGGER.error(String.format("task processed ok, but task could not be closed %s", task.id), e);
+            LOGGER.error(String.format("task processed ok, but task %s could not be closed/rescheduled", task.id), e);
             throw new RuntimeException(e);
         }
     }
