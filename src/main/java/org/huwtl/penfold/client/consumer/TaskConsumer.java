@@ -6,6 +6,7 @@ import org.huwtl.penfold.client.DateTimeSource;
 import org.huwtl.penfold.client.QueueId;
 import org.huwtl.penfold.client.Result;
 import org.huwtl.penfold.client.Task;
+import org.huwtl.penfold.client.TaskId;
 import org.huwtl.penfold.client.TaskQueryService;
 import org.huwtl.penfold.client.TaskStatus;
 import org.huwtl.penfold.client.TaskStoreService;
@@ -27,9 +28,11 @@ public class TaskConsumer
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(TaskConsumer.class);
 
+    private static final Void VOID = null;
+
     private static final String DEFAULT_FAILURE_REASON = "FAIL";
 
-    private static final RetryerBuilder<Task> RETRY_BUILDER = RetryerBuilder.<Task>newBuilder() //
+    private static final RetryerBuilder<Void> RETRY_BUILDER = RetryerBuilder.<Void>newBuilder() //
             .retryIfException() //
             .withWaitStrategy(fixedWait(10, SECONDS)) //
             .withStopStrategy(stopAfterAttempt(100));
@@ -66,31 +69,45 @@ public class TaskConsumer
 
             final Result result = executeFunction(task);
 
-            applyResult(task, result);
+            applyResultWithRetries(task.id, result);
         }
     }
 
-    private void applyResult(final Task task, final Result result)
+    private void applyResultWithRetries(final TaskId taskId, final Result result)
     {
-        if (result == SUCCESS)
+        retry(taskId, () -> applyResult(taskId, result));
+    }
+
+    private Void applyResult(final TaskId taskId, final Result result)
+    {
+        final Optional<Task> updatedVersionOfTask = taskQueryService.find(taskId);
+
+        final boolean isTaskStillStarted = updatedVersionOfTask.isPresent() && updatedVersionOfTask.get().status.isStarted();
+
+        if (isTaskStillStarted)
         {
-            retry(task, () -> taskStoreService.close(task, Optional.empty()));
-        }
-        else if (result == FAILURE)
-        {
-            retry(task, () -> taskStoreService.close(task, Optional.of(DEFAULT_FAILURE_REASON)));
-        }
-        else if (result == RETRY)
-        {
-            retry(task, () -> taskStoreService.reschedule(task, dateTimeSource.now().plusMinutes(RETRY_DELAY_IN_MINUTES), Optional.of(DEFAULT_FAILURE_REASON)));
+            if (result == SUCCESS)
+            {
+                taskStoreService.close(updatedVersionOfTask.get(), Optional.empty());
+            }
+            else if (result == FAILURE)
+            {
+                taskStoreService.close(updatedVersionOfTask.get(), Optional.of(DEFAULT_FAILURE_REASON));
+            }
+            else
+            {
+                taskStoreService.reschedule(updatedVersionOfTask.get(), dateTimeSource.now().plusMinutes(RETRY_DELAY_IN_MINUTES), Optional.of(DEFAULT_FAILURE_REASON));
+            }
         }
         else
         {
-            throw new RuntimeException(String.format("unrecognised result type %s when processing task %s", result, task.id));
+            LOGGER.info("task {} already closed or rescheduled - doing nothing", taskId);
         }
+
+        return VOID;
     }
 
-    private void retry(final Task task, final Callable<Task> callable)
+    private void retry(final TaskId taskId, final Callable<Void> callable)
     {
         try
         {
@@ -98,7 +115,7 @@ public class TaskConsumer
         }
         catch (final Exception e)
         {
-            LOGGER.error(String.format("task processed ok, but task %s could not be closed/rescheduled", task.id), e);
+            LOGGER.error(String.format("task %s processed ok, but could not be closed/rescheduled", taskId), e);
             throw new RuntimeException(e);
         }
     }
