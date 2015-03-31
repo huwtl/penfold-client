@@ -8,7 +8,7 @@ import java.util.concurrent.TimeUnit
 
 class ConsumerConfigurationTest extends Specification {
 
-    def "should build consumer"()
+    def "should configure consumer"()
     {
         when:
         new ConsumerConfiguration()
@@ -22,8 +22,7 @@ class ConsumerConfigurationTest extends Specification {
                     public Result execute(final Task task) {
                         // your implementation here
                     }})
-                .build()
-                .start();
+                .build();
 
         then:
         true

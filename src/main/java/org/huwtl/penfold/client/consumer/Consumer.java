@@ -29,10 +29,12 @@ public class Consumer
 
     private static final Void VOID = null;
 
-    private static final RetryerBuilder<Void> RETRY_BUILDER = RetryerBuilder.<Void>newBuilder() //
+    private static final RetryerBuilder<Void> DEFAULT_RETRY_BUILDER = RetryerBuilder.<Void>newBuilder() //
             .retryIfException() //
             .withWaitStrategy(fixedWait(10, SECONDS)) //
-            .withStopStrategy(stopAfterAttempt(100));
+            .withStopStrategy(stopAfterAttempt(2));
+
+    private final RetryerBuilder<Void> retryBuilder;
 
     private final QueueId queue;
 
@@ -49,12 +51,19 @@ public class Consumer
     public Consumer(final QueueId queue, final ConsumerFunction function, final Optional<Interval> retryDelay, final TaskQueryService taskQueryService,
                     final TaskStoreService taskStoreService, final DateTimeSource dateTimeSource)
     {
+        this(queue, function, retryDelay, taskQueryService, taskStoreService, dateTimeSource, DEFAULT_RETRY_BUILDER);
+    }
+
+    Consumer(final QueueId queue, final ConsumerFunction function, final Optional<Interval> retryDelay, final TaskQueryService taskQueryService,
+                    final TaskStoreService taskStoreService, final DateTimeSource dateTimeSource, final RetryerBuilder<Void> retryBuilder)
+    {
         this.queue = queue;
         this.function = function;
         this.retryDelay = retryDelay;
         this.taskQueryService = taskQueryService;
         this.taskStoreService = taskStoreService;
         this.dateTimeSource = dateTimeSource;
+        this.retryBuilder = retryBuilder;
     }
 
     public void consume()
@@ -119,7 +128,7 @@ public class Consumer
     {
         if (retryDelay.isPresent())
         {
-            taskStoreService.reschedule(updatedVersionOfTask.get(), dateTimeSource.now().plusMinutes(retryDelay.get().seconds()), reason);
+            taskStoreService.reschedule(updatedVersionOfTask.get(), dateTimeSource.now().plusSeconds(retryDelay.get().seconds()), reason);
         }
         else
         {
@@ -131,7 +140,7 @@ public class Consumer
     {
         try
         {
-            RETRY_BUILDER.build().call(callable);
+            retryBuilder.build().call(callable);
         }
         catch (final Exception e)
         {
