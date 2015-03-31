@@ -29,7 +29,7 @@ public class ConsumerPoller
 
     public void start()
     {
-        scheduledExecutorService.scheduleAtFixedRate(this::consume, 0, interval.time, interval.unit);
+        scheduledExecutorService.scheduleAtFixedRate(this::consume, 0, interval.duration, interval.unit);
         shutdownProcedure.registerShutdownHook();
     }
 

@@ -8,16 +8,21 @@ import static org.apache.commons.lang3.builder.ToStringBuilder.reflectionToStrin
 
 public class Interval
 {
-    public final long time;
+    public final long duration;
 
     public final TimeUnit unit;
 
-    public Interval(final long time, final TimeUnit unit)
+    public Interval(final long duration, final TimeUnit unit)
     {
-        checkArgument(time > 0 && unit != null, "Invalid interval");
+        checkArgument(duration > 0 && unit != null, "Invalid interval");
 
-        this.time = time;
+        this.duration = duration;
         this.unit = unit;
+    }
+
+    public long seconds()
+    {
+        return unit.toMinutes(duration);
     }
 
     @Override

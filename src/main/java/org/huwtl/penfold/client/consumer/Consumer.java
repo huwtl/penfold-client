@@ -37,8 +37,6 @@ public class Consumer
             .withWaitStrategy(fixedWait(10, SECONDS)) //
             .withStopStrategy(stopAfterAttempt(100));
 
-    private static final int RETRY_DELAY_IN_MINUTES = 20;
-
     private final QueueId queue;
 
     private final ConsumerFunction function;
@@ -91,22 +89,15 @@ public class Consumer
         {
             if (result == SUCCESS)
             {
-                taskStoreService.close(updatedVersionOfTask.get(), Optional.empty());
+                success(updatedVersionOfTask);
             }
             else if (result == FAILURE)
             {
-                taskStoreService.close(updatedVersionOfTask.get(), Optional.of(DEFAULT_FAILURE_REASON));
+                failure(updatedVersionOfTask);
             }
             else
             {
-                if (retryDelay.isPresent())
-                {
-                    taskStoreService.reschedule(updatedVersionOfTask.get(), dateTimeSource.now().plusMinutes(RETRY_DELAY_IN_MINUTES), Optional.of(DEFAULT_FAILURE_REASON));
-                }
-                else
-                {
-                    taskStoreService.requeue(updatedVersionOfTask.get(), Optional.of(DEFAULT_FAILURE_REASON));
-                }
+                retry(updatedVersionOfTask);
             }
         }
         else
@@ -115,6 +106,33 @@ public class Consumer
         }
 
         return VOID;
+    }
+
+    private void success(final Optional<Task> updatedVersionOfTask)
+    {
+        taskStoreService.close(updatedVersionOfTask.get(), Optional.empty());
+    }
+
+    private void failure(final Optional<Task> updatedVersionOfTask)
+    {
+        closeWithFailure(updatedVersionOfTask);
+    }
+
+    private void closeWithFailure(final Optional<Task> updatedVersionOfTask)
+    {
+        taskStoreService.close(updatedVersionOfTask.get(), Optional.of(DEFAULT_FAILURE_REASON));
+    }
+
+    private void retry(final Optional<Task> updatedVersionOfTask)
+    {
+        if (retryDelay.isPresent())
+        {
+            taskStoreService.reschedule(updatedVersionOfTask.get(), dateTimeSource.now().plusMinutes(retryDelay.get().seconds()), Optional.of(DEFAULT_FAILURE_REASON));
+        }
+        else
+        {
+            taskStoreService.requeue(updatedVersionOfTask.get(), Optional.of(DEFAULT_FAILURE_REASON));
+        }
     }
 
     private void retry(final TaskId taskId, final Callable<Void> callable)
