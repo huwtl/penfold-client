@@ -24,9 +24,9 @@ import static org.huwtl.penfold.client.Result.FAILURE;
 import static org.huwtl.penfold.client.Result.RETRY;
 import static org.huwtl.penfold.client.Result.SUCCESS;
 
-public class TaskConsumer
+public class Consumer
 {
-    private static final Logger LOGGER = LoggerFactory.getLogger(TaskConsumer.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(Consumer.class);
 
     private static final Void VOID = null;
 
@@ -39,23 +39,26 @@ public class TaskConsumer
 
     private static final int RETRY_DELAY_IN_MINUTES = 20;
 
+    private final QueueId queue;
+
+    private final ConsumerFunction function;
+
+    private final Optional<Interval> retryDelay;
+
     private final TaskQueryService taskQueryService;
 
     private final TaskStoreService taskStoreService;
 
-    private final QueueId queue;
-
-    private final TaskConsumerFunction function;
-
     private final DateTimeSource dateTimeSource;
 
-    public TaskConsumer(final QueueId queue, final TaskConsumerFunction function, final TaskQueryService taskQueryService, final TaskStoreService taskStoreService,
-                        final DateTimeSource dateTimeSource)
+    public Consumer(final QueueId queue, final ConsumerFunction function, final Optional<Interval> retryDelay, final TaskQueryService taskQueryService, final TaskStoreService taskStoreService,
+                    final DateTimeSource dateTimeSource)
     {
-        this.taskQueryService = taskQueryService;
-        this.taskStoreService = taskStoreService;
         this.queue = queue;
         this.function = function;
+        this.retryDelay = retryDelay;
+        this.taskQueryService = taskQueryService;
+        this.taskStoreService = taskStoreService;
         this.dateTimeSource = dateTimeSource;
     }
 
@@ -96,7 +99,14 @@ public class TaskConsumer
             }
             else
             {
-                taskStoreService.reschedule(updatedVersionOfTask.get(), dateTimeSource.now().plusMinutes(RETRY_DELAY_IN_MINUTES), Optional.of(DEFAULT_FAILURE_REASON));
+                if (retryDelay.isPresent())
+                {
+                    taskStoreService.reschedule(updatedVersionOfTask.get(), dateTimeSource.now().plusMinutes(RETRY_DELAY_IN_MINUTES), Optional.of(DEFAULT_FAILURE_REASON));
+                }
+                else
+                {
+                    taskStoreService.requeue(updatedVersionOfTask.get(), Optional.of(DEFAULT_FAILURE_REASON));
+                }
             }
         }
         else

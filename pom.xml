@@ -13,7 +13,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <jackson.version>2.5.1</jackson.version>
+        <jackson.version>2.5.2</jackson.version>
         <codahale.metrics.version>3.0.2</codahale.metrics.version>
     </properties>
 
@@ -116,7 +116,7 @@
         <dependency>
             <groupId>org.spockframework</groupId>
             <artifactId>spock-core</artifactId>
-            <version>1.0-groovy-2.4</version>
+            <version>0.7-groovy-2.0</version>
             <scope>test</scope>
         </dependency>
 
@@ -163,7 +163,7 @@
             <plugin>
                 <groupId>org.codehaus.gmaven</groupId>
                 <artifactId>gmaven-plugin</artifactId>
-                <version>1.5</version>
+                <version>1.4</version>
                 <configuration>
                     <providerSelection>2.0</providerSelection>
                     <source/>
