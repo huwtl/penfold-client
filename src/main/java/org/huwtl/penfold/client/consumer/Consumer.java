@@ -20,17 +20,14 @@ import java.util.concurrent.Callable;
 import static com.github.rholder.retry.StopStrategies.stopAfterAttempt;
 import static com.github.rholder.retry.WaitStrategies.fixedWait;
 import static java.util.concurrent.TimeUnit.SECONDS;
-import static org.huwtl.penfold.client.Result.FAILURE;
-import static org.huwtl.penfold.client.Result.RETRY;
-import static org.huwtl.penfold.client.Result.SUCCESS;
+import static org.huwtl.penfold.client.ResultType.FAIL;
+import static org.huwtl.penfold.client.ResultType.SUCCESS;
 
 public class Consumer
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(Consumer.class);
 
     private static final Void VOID = null;
-
-    private static final String DEFAULT_FAILURE_REASON = "FAIL";
 
     private static final RetryerBuilder<Void> RETRY_BUILDER = RetryerBuilder.<Void>newBuilder() //
             .retryIfException() //
@@ -49,8 +46,8 @@ public class Consumer
 
     private final DateTimeSource dateTimeSource;
 
-    public Consumer(final QueueId queue, final ConsumerFunction function, final Optional<Interval> retryDelay, final TaskQueryService taskQueryService, final TaskStoreService taskStoreService,
-                    final DateTimeSource dateTimeSource)
+    public Consumer(final QueueId queue, final ConsumerFunction function, final Optional<Interval> retryDelay, final TaskQueryService taskQueryService,
+                    final TaskStoreService taskStoreService, final DateTimeSource dateTimeSource)
     {
         this.queue = queue;
         this.function = function;
@@ -76,7 +73,7 @@ public class Consumer
 
     private void applyResultWithRetries(final TaskId taskId, final Result result)
     {
-        retry(taskId, () -> applyResult(taskId, result));
+        retryCodeBlock(taskId, () -> applyResult(taskId, result));
     }
 
     private Void applyResult(final TaskId taskId, final Result result)
@@ -87,17 +84,17 @@ public class Consumer
 
         if (isTaskStillStarted)
         {
-            if (result == SUCCESS)
+            if (result.type == SUCCESS)
             {
                 success(updatedVersionOfTask);
             }
-            else if (result == FAILURE)
+            else if (result.type == FAIL)
             {
-                failure(updatedVersionOfTask);
+                fail(updatedVersionOfTask, result.reason);
             }
             else
             {
-                retry(updatedVersionOfTask);
+                retry(updatedVersionOfTask, result.reason);
             }
         }
         else
@@ -113,29 +110,24 @@ public class Consumer
         taskStoreService.close(updatedVersionOfTask.get(), Optional.empty());
     }
 
-    private void failure(final Optional<Task> updatedVersionOfTask)
+    private void fail(final Optional<Task> updatedVersionOfTask, final Optional<String> reason)
     {
-        closeWithFailure(updatedVersionOfTask);
+        taskStoreService.close(updatedVersionOfTask.get(), reason);
     }
 
-    private void closeWithFailure(final Optional<Task> updatedVersionOfTask)
-    {
-        taskStoreService.close(updatedVersionOfTask.get(), Optional.of(DEFAULT_FAILURE_REASON));
-    }
-
-    private void retry(final Optional<Task> updatedVersionOfTask)
+    private void retry(final Optional<Task> updatedVersionOfTask, final Optional<String> reason)
     {
         if (retryDelay.isPresent())
         {
-            taskStoreService.reschedule(updatedVersionOfTask.get(), dateTimeSource.now().plusMinutes(retryDelay.get().seconds()), Optional.of(DEFAULT_FAILURE_REASON));
+            taskStoreService.reschedule(updatedVersionOfTask.get(), dateTimeSource.now().plusMinutes(retryDelay.get().seconds()), reason);
         }
         else
         {
-            taskStoreService.requeue(updatedVersionOfTask.get(), Optional.of(DEFAULT_FAILURE_REASON));
+            taskStoreService.requeue(updatedVersionOfTask.get(), reason);
         }
     }
 
-    private void retry(final TaskId taskId, final Callable<Void> callable)
+    private void retryCodeBlock(final TaskId taskId, final Callable<Void> callable)
     {
         try
         {
@@ -156,7 +148,7 @@ public class Consumer
         }
         catch (Exception e)
         {
-            return RETRY;
+            return Result.retry(Optional.empty());
         }
     }
 }
