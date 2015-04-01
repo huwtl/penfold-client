@@ -1,17 +1,9 @@
-package org.huwtl.penfold.client.consumer
+package org.huwtl.penfold.client.domain.services
 
 import com.github.rholder.retry.RetryerBuilder
-import org.huwtl.penfold.client.domain.services.Consumer
-import org.huwtl.penfold.client.domain.services.ConsumerFunction
-import org.huwtl.penfold.client.domain.services.TaskQueryService
-import org.huwtl.penfold.client.domain.services.TaskStoreService
-import org.huwtl.penfold.client.domain.model.Payload
-import org.huwtl.penfold.client.domain.model.QueueId
-import org.huwtl.penfold.client.domain.model.Result
-import org.huwtl.penfold.client.domain.model.Task
-import org.huwtl.penfold.client.domain.model.TaskId
 import org.huwtl.penfold.client.app.support.Interval
 import org.huwtl.penfold.client.app.support.LocalDateTimeSource
+import org.huwtl.penfold.client.domain.model.*
 import spock.lang.Specification
 
 import java.time.LocalDateTime
@@ -153,7 +145,7 @@ class ConsumerTest extends Specification {
         consumer.consume()
 
         then:
-        2 * taskStoreService.close(startedTask1, failureReason) >>> {throw new RuntimeException()}
+        2 * taskStoreService.close(startedTask1, failureReason) >> {throw new RuntimeException()}
         thrown(RuntimeException)
     }
 }

@@ -16,6 +16,8 @@ public class TaskStatus
 
     public static final TaskStatus CLOSED = new TaskStatus("closed");
 
+    public static final TaskStatus CANCELLED = new TaskStatus("cancelled");
+
     public final String value;
 
     public TaskStatus(final String value)
@@ -42,6 +44,11 @@ public class TaskStatus
     public boolean isClosed()
     {
         return this.equals(CLOSED);
+    }
+
+    public boolean isCancelled()
+    {
+        return this.equals(CANCELLED);
     }
 
     @Override public int hashCode()

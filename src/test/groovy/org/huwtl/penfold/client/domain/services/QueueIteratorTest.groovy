@@ -1,15 +1,8 @@
 package org.huwtl.penfold.client.domain.services
+
 import com.google.common.collect.ImmutableList
 import org.huwtl.penfold.client.app.TaskQueryServiceImpl
-import org.huwtl.penfold.client.domain.model.PageReference
-import org.huwtl.penfold.client.domain.model.Payload
-import org.huwtl.penfold.client.domain.model.QueueId
-import org.huwtl.penfold.client.domain.model.Task
-import org.huwtl.penfold.client.domain.model.TaskId
-import org.huwtl.penfold.client.domain.model.TaskStatus
-import org.huwtl.penfold.client.domain.model.TasksPage
-import org.huwtl.penfold.client.domain.services.QueueIterator
-import org.huwtl.penfold.client.model.*
+import org.huwtl.penfold.client.domain.model.*
 import spock.lang.Specification
 
 import java.time.LocalDateTime

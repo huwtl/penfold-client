@@ -1,0 +1,15 @@
+package org.huwtl.penfold.client.app
+
+import spock.lang.Specification
+
+class TaskQueryServiceBuilderTest extends Specification {
+
+    def "should build task query service"()
+    {
+        expect:
+        new TaskQueryServiceBuilder()
+                .fromServer("http://localhost")
+                .withCredentials("user", "pass")
+                .build();
+    }
+}

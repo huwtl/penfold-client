@@ -31,7 +31,7 @@ public class TaskConsumerImpl implements TaskConsumer
         this.shutdownProcedure = new ShutdownProcedure(scheduledExecutorService);
     }
 
-    public void start()
+    @Override public void start()
     {
         scheduledExecutorService.scheduleAtFixedRate(this::consume, 0, interval.duration, interval.unit);
         shutdownProcedure.registerShutdownHook();

@@ -1,20 +1,14 @@
 package org.huwtl.penfold.client.domain.services
 
 import com.google.common.collect.ImmutableList
-import org.huwtl.penfold.client.domain.model.PageReference
-import org.huwtl.penfold.client.domain.model.Payload
-import org.huwtl.penfold.client.domain.model.QueueId
-import org.huwtl.penfold.client.domain.model.Task
-import org.huwtl.penfold.client.domain.model.TaskId
-import org.huwtl.penfold.client.domain.model.TaskStatus
-import org.huwtl.penfold.client.domain.model.TasksPage
 import org.huwtl.penfold.client.app.TaskQueryServiceImpl
-import org.huwtl.penfold.client.domain.services.TaskIterator
+import org.huwtl.penfold.client.domain.model.*
 import spock.lang.Specification
 
 import java.time.LocalDateTime
 
 import static java.util.Optional.empty
+import static org.huwtl.penfold.client.domain.model.TaskStatus.READY
 
 class TaskIteratorTest extends Specification {
 
@@ -42,7 +36,7 @@ class TaskIteratorTest extends Specification {
 
     private static def Task createTask(final String id)
     {
-        return new Task(new TaskId(id), "1", new QueueId("q1"), TaskStatus.READY, LocalDateTime.of(2014, 2, 25, 12, 0, 0), 1, new Payload([type: "type1"]))
+        return new Task(new TaskId(id), "1", new QueueId("q1"), READY, LocalDateTime.of(2014, 2, 25, 12, 0, 0), 1, new Payload([type: "type1"]))
     }
 
     private def setupTasksPage(final Optional<PageReference> currentPage, final List<Task> currentPageTasks, final Optional<PageReference> nextPage)
