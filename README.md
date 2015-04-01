@@ -48,7 +48,7 @@ new TaskConsumerBuilder()
     .fromServer("http://localhost")
     .withCredentials("user", "pass")
     .fromQueue("testqueue")
-    .delayBetweenEachRetryFor(new Interval(15, TimeUnit.MINUTES))
+    .delayBetweenEachRetryOf(new Interval(15, TimeUnit.MINUTES))
     .consumeWith(new ConsumerFunction() {
         @Override public Result execute(final Task task) {
             // your implementation here
