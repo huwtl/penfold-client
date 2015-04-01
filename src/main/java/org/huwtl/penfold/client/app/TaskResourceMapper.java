@@ -18,7 +18,7 @@ class TaskResourceMapper
     {
         final TaskId id = new TaskId(input.getValueAsString("id").orNull());
         final String version = input.getValueAsString("version").orNull();
-        final Integer attempts = Integer.valueOf(input.getValueAsString("version").orNull());
+        final Integer attempts = Integer.valueOf(input.getValueAsString("attempts").orNull());
         final QueueId queueId = new QueueId(input.getValueAsString("queue").orNull());
         final TaskStatus status = new TaskStatus(input.getValueAsString("status").orNull());
         final LocalDateTime created = TaskDateTimeFormatter.parse(input.getValueAsString("created").get());

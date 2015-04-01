@@ -17,13 +17,6 @@ public class NewTask
 
     public final Optional<LocalDateTime> triggerDate;
 
-    @SuppressWarnings("UnusedDeclaration") private NewTask()
-    {
-        queue = null;
-        payload = null;
-        triggerDate = Optional.empty();
-    }
-
     public NewTask(final QueueId queue, final Payload payload, final Optional<LocalDateTime> triggerDate)
     {
         checkArgument(queue != null, "missing queue");

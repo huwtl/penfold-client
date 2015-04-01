@@ -1,5 +1,4 @@
 package org.huwtl.penfold.client.app
-
 import com.sun.jersey.api.client.Client
 import com.sun.jersey.api.client.ClientResponse
 import com.sun.jersey.api.client.WebResource
@@ -49,7 +48,7 @@ class TaskQueryServiceImplTest extends Specification {
         final task = queryRepository.find(id)
 
         then:
-        task == Optional.of(expectedTask)
+        task == Optional.of(expectedTask.builder().withVersion("2").build())
     }
 
     def "should query tasks by queue"()

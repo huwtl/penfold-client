@@ -14,12 +14,6 @@
     },
     "UpdateTaskPayload": {
       "href": "http://localhost/tasks/1/2"
-    },
-    "CloseTask": {
-      "href": "http://localhost/tasks/1/2"
-    },
-    "CancelTask": {
-      "href": "http://localhost/tasks/1/2"
     }
   },
   "id": "1",
@@ -27,10 +21,12 @@
   "payload": {
     "type": "type1"
   },
-  "queue": "q1",
-  "status": "ready",
-  "created": "2014-02-25 12:00:00",
-  "attempts": 1,
-  "statusLastModified": "2014-02-26 13:00:00",
-  "triggerDate": "2014-04-15 10:35:05"
+  "queue": "aggregator",
+  "status": "waiting",
+  "statusLastModified": "2014-03-15 10:35:05",
+  "triggerDate": "2015-04-15 10:35:05",
+  "created": "2014-03-15 10:35:05",
+  "attempts": 0
 }
+
+

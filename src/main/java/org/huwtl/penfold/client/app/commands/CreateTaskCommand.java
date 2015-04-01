@@ -15,10 +15,17 @@ public class CreateTaskCommand
 
     public final Optional<LocalDateTime> triggerDate;
 
+    public CreateTaskCommand()
+    {
+        queue = null;
+        payload = null;
+        triggerDate = Optional.empty();
+    }
+
     public CreateTaskCommand(final NewTask task)
     {
         this.queue = task.queue;
-        this.triggerDate = task.triggerDate;
         this.payload = task.payload.getAsMap();
+        this.triggerDate = task.triggerDate;
     }
 }
