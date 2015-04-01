@@ -3,6 +3,7 @@ package org.huwtl.penfold.client.app;
 import org.huwtl.penfold.client.app.support.Interval;
 import org.huwtl.penfold.client.app.support.ShutdownProcedure;
 import org.huwtl.penfold.client.domain.services.Consumer;
+import org.huwtl.penfold.client.domain.services.TaskConsumer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -10,9 +11,9 @@ import java.util.concurrent.ScheduledExecutorService;
 
 import static java.util.concurrent.Executors.newSingleThreadScheduledExecutor;
 
-public class ConsumerPoller
+public class TaskConsumerImpl implements TaskConsumer
 {
-    private static final Logger LOG = LoggerFactory.getLogger(ConsumerPoller.class);
+    private static final Logger LOG = LoggerFactory.getLogger(TaskConsumerImpl.class);
 
     private final Consumer consumer;
 
@@ -22,7 +23,7 @@ public class ConsumerPoller
 
     private final ShutdownProcedure shutdownProcedure;
 
-    public ConsumerPoller(final Consumer consumer, final Interval interval)
+    public TaskConsumerImpl(final Consumer consumer, final Interval interval)
     {
         this.consumer = consumer;
         this.interval = interval;

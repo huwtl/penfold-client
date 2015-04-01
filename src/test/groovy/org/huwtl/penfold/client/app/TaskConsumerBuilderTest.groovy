@@ -8,17 +8,17 @@ import spock.lang.Specification
 
 import java.util.concurrent.TimeUnit
 
-class ConsumerConfigurationTest extends Specification {
+class TaskConsumerBuilderTest extends Specification {
 
     def "should configure consumer"()
     {
         when:
-        new ConsumerConfiguration()
+        new TaskConsumerBuilder()
                 .fromServer("http://localhost")
                 .withCredentials("user", "pass")
                 .fromQueue("testqueue")
                 .withPollingFrequency(new Interval(1, TimeUnit.MINUTES))
-                .delayBetweenEachRetryFor(new Interval(15, TimeUnit.MINUTES))
+                .delayBetweenEachRetryOf(new Interval(15, TimeUnit.MINUTES))
                 .consumeWith(new ConsumerFunction() {
                     @Override
                     public Result execute(final Task task) {
