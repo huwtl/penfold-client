@@ -1,7 +1,17 @@
 package org.huwtl.penfold.client.consumer
 
 import com.github.rholder.retry.RetryerBuilder
-import org.huwtl.penfold.client.*
+import org.huwtl.penfold.client.domain.services.Consumer
+import org.huwtl.penfold.client.domain.services.ConsumerFunction
+import org.huwtl.penfold.client.domain.services.TaskQueryService
+import org.huwtl.penfold.client.domain.services.TaskStoreService
+import org.huwtl.penfold.client.domain.model.Payload
+import org.huwtl.penfold.client.domain.model.QueueId
+import org.huwtl.penfold.client.domain.model.Result
+import org.huwtl.penfold.client.domain.model.Task
+import org.huwtl.penfold.client.domain.model.TaskId
+import org.huwtl.penfold.client.app.support.Interval
+import org.huwtl.penfold.client.app.support.LocalDateTimeSource
 import spock.lang.Specification
 
 import java.time.LocalDateTime
@@ -9,7 +19,7 @@ import java.time.LocalDateTime
 import static com.github.rholder.retry.StopStrategies.stopAfterAttempt
 import static java.util.Optional.empty
 import static java.util.concurrent.TimeUnit.HOURS
-import static org.huwtl.penfold.client.TaskStatus.*
+import static org.huwtl.penfold.client.domain.model.TaskStatus.*
 
 class ConsumerTest extends Specification {
 
