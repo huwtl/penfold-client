@@ -8,7 +8,7 @@ class TaskQueryServiceBuilderTest extends Specification {
     {
         expect:
         new TaskQueryServiceBuilder()
-                .fromServer("http://localhost")
+                .forServer("http://localhost")
                 .withCredentials("user", "pass")
                 .build();
     }

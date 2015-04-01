@@ -14,7 +14,7 @@ public class TaskQueryServiceBuilder
 
     private Credentials credentials;
 
-    public TaskQueryServiceBuilder fromServer(final String url)
+    public TaskQueryServiceBuilder forServer(final String url)
     {
         this.url = url;
         return this;

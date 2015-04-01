@@ -14,7 +14,7 @@ public class TaskStoreServiceBuilder
 
     private Credentials credentials;
 
-    public TaskStoreServiceBuilder fromServer(final String url)
+    public TaskStoreServiceBuilder forServer(final String url)
     {
         this.url = url;
         return this;

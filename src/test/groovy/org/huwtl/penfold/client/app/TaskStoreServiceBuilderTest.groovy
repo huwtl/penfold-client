@@ -8,7 +8,7 @@ class TaskStoreServiceBuilderTest extends Specification {
     {
         expect:
         new TaskStoreServiceBuilder()
-                .fromServer("http://localhost")
+                .forServer("http://localhost")
                 .withCredentials("user", "pass")
                 .build();
     }

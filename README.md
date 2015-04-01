@@ -21,7 +21,7 @@ Use this if you wish to query tasks.
 
 ```java
 final TaskQueryService service = new TaskQueryServiceBuilder()
-    .fromServer("http://localhost")
+    .forServer("http://localhost")
     .withCredentials("user", "pass")
     .build();
 ```
@@ -33,7 +33,7 @@ Use this if you wish to create or update tasks.
 
 ```java
 final TaskStoreService service = new TaskStoreServiceBuilder()
-    .fromServer("http://localhost")
+    .forServer("http://localhost")
     .withCredentials("user", "pass")
     .build();
 ```
