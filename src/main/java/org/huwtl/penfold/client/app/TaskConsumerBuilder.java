@@ -14,6 +14,7 @@ import org.huwtl.penfold.client.app.support.Interval;
 import org.huwtl.penfold.client.domain.model.QueueId;
 
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.concurrent.TimeUnit.MINUTES;
@@ -56,15 +57,15 @@ public class TaskConsumerBuilder
         return this;
     }
 
-    public TaskConsumerBuilder withPollingFrequency(final Interval pollingFrequency)
+    public TaskConsumerBuilder withPollingFrequency(final long interval, final TimeUnit timeUnit)
     {
-        this.pollingFrequency = pollingFrequency;
+        this.pollingFrequency = new Interval(interval, timeUnit);
         return this;
     }
 
-    public TaskConsumerBuilder delayBetweenEachRetryOf(final Interval retryDelay)
+    public TaskConsumerBuilder delayBetweenEachRetryOf(final long interval, final TimeUnit timeUnit)
     {
-        this.retryDelay = Optional.of(retryDelay);
+        this.retryDelay = Optional.of(new Interval(interval, timeUnit));
         return this;
     }
 

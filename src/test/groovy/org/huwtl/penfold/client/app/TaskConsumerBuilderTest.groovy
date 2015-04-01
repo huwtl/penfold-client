@@ -1,6 +1,5 @@
 package org.huwtl.penfold.client.app
 
-import org.huwtl.penfold.client.app.support.Interval
 import org.huwtl.penfold.client.domain.model.Result
 import org.huwtl.penfold.client.domain.model.Task
 import org.huwtl.penfold.client.domain.services.ConsumerFunction
@@ -17,8 +16,8 @@ class TaskConsumerBuilderTest extends Specification {
                 .fromServer("http://localhost")
                 .withCredentials("user", "pass")
                 .fromQueue("testqueue")
-                .withPollingFrequency(new Interval(1, MINUTES))
-                .delayBetweenEachRetryOf(new Interval(15, MINUTES))
+                .withPollingFrequency(1, MINUTES)
+                .delayBetweenEachRetryOf(15, MINUTES)
                 .consumeWith(new ConsumerFunction() {
             @Override
             public Result execute(final Task task) {
