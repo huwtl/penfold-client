@@ -16,12 +16,16 @@ public abstract class AbstractTaskIterator extends AbstractIterator<Task>
     public AbstractTaskIterator(final TaskQueryServiceImpl taskQueryService)
     {
         this.taskQueryService = taskQueryService;
-        currentPage = loadPageOfTasks(Optional.empty());
-        currentPageIterator = currentPage.tasks.iterator();
     }
 
     @Override protected Task computeNext()
     {
+        if (currentPage == null)
+        {
+            currentPage = loadPageOfTasks(Optional.empty());
+            currentPageIterator = currentPage.tasks.iterator();
+        }
+
         if (currentPageIterator.hasNext())
         {
             return currentPageIterator.next();

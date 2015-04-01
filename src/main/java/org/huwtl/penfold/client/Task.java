@@ -18,21 +18,18 @@ public class Task
 
     public final TaskStatus status;
 
-    public final LocalDateTime triggerDate;
-
     public final int attempts;
 
     public final Payload payload;
 
     public Task(final TaskId id, final String version, final QueueId queue, final TaskStatus status, final LocalDateTime created, final int attempts,
-                final LocalDateTime triggerDate, final Payload payload)
+                final Payload payload)
     {
         this.id = id;
         this.version = version;
         this.queue = queue;
         this.created = created;
         this.status = status;
-        this.triggerDate = triggerDate;
         this.attempts = attempts;
         this.payload = payload;
     }
@@ -69,8 +66,6 @@ public class Task
 
         private TaskStatus status;
 
-        private LocalDateTime triggerDate;
-
         private int attempts;
 
         private Payload payload;
@@ -82,7 +77,6 @@ public class Task
             this.queue = task.queue;
             this.created = task.created;
             this.status = task.status;
-            this.triggerDate = task.triggerDate;
             this.attempts = task.attempts;
             this.payload = task.payload;
         }
@@ -116,12 +110,6 @@ public class Task
             return this;
         }
 
-        public Builder withTriggerDate(final LocalDateTime triggerDate)
-        {
-            this.triggerDate = triggerDate;
-            return this;
-        }
-
         public Builder withAttempts(final int attempts)
         {
             this.attempts = attempts;
@@ -136,7 +124,7 @@ public class Task
 
         public Task build()
         {
-            return new Task(id, version, queue, status, created, attempts, triggerDate, payload);
+            return new Task(id, version, queue, status, created, attempts, payload);
         }
     }
 }

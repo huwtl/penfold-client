@@ -6,7 +6,7 @@ import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 
 public class ObjectMapperFactory
 {
-    public ObjectMapper create()
+    public static ObjectMapper create()
     {
         final ObjectMapper objectMapper = new ObjectMapper();
 

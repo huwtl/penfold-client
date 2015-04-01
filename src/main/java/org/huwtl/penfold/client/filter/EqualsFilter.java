@@ -10,7 +10,7 @@ public class EqualsFilter extends Filter
         this.value = value;
     }
 
-    public static Filter of(final String key, final String value)
+    public static EqualsFilter of(final String key, final String value)
     {
         return new EqualsFilter(key, value);
     }

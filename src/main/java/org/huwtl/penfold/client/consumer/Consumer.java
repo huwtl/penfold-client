@@ -2,7 +2,7 @@ package org.huwtl.penfold.client.consumer;
 
 import com.github.rholder.retry.RetryerBuilder;
 import com.google.common.collect.ImmutableList;
-import org.huwtl.penfold.client.DateTimeSource;
+import org.huwtl.penfold.client.LocalDateTimeSource;
 import org.huwtl.penfold.client.QueueId;
 import org.huwtl.penfold.client.Result;
 import org.huwtl.penfold.client.Task;
@@ -46,16 +46,16 @@ public class Consumer
 
     private final TaskStoreService taskStoreService;
 
-    private final DateTimeSource dateTimeSource;
+    private final LocalDateTimeSource dateTimeSource;
 
     public Consumer(final QueueId queue, final ConsumerFunction function, final Optional<Interval> retryDelay, final TaskQueryService taskQueryService,
-                    final TaskStoreService taskStoreService, final DateTimeSource dateTimeSource)
+                    final TaskStoreService taskStoreService, final LocalDateTimeSource dateTimeSource)
     {
         this(queue, function, retryDelay, taskQueryService, taskStoreService, dateTimeSource, DEFAULT_RETRY_BUILDER);
     }
 
     Consumer(final QueueId queue, final ConsumerFunction function, final Optional<Interval> retryDelay, final TaskQueryService taskQueryService,
-                    final TaskStoreService taskStoreService, final DateTimeSource dateTimeSource, final RetryerBuilder<Void> retryBuilder)
+                    final TaskStoreService taskStoreService, final LocalDateTimeSource dateTimeSource, final RetryerBuilder<Void> retryBuilder)
     {
         this.queue = queue;
         this.function = function;

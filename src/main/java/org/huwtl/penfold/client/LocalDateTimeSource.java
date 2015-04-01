@@ -2,7 +2,7 @@ package org.huwtl.penfold.client;
 
 import java.time.LocalDateTime;
 
-public class DateTimeSource
+public class LocalDateTimeSource
 {
     public LocalDateTime now()
     {

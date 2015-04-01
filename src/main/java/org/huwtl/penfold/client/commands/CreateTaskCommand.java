@@ -1,17 +1,17 @@
 package org.huwtl.penfold.client.commands;
 
 import org.huwtl.penfold.client.NewTask;
-import org.huwtl.penfold.client.Payload;
 import org.huwtl.penfold.client.QueueId;
 
 import java.time.LocalDateTime;
+import java.util.Map;
 import java.util.Optional;
 
 public class CreateTaskCommand
 {
     public final QueueId queue;
 
-    public final Payload payload;
+    public final Map<String, Object> payload;
 
     public final Optional<LocalDateTime> triggerDate;
 
@@ -19,6 +19,6 @@ public class CreateTaskCommand
     {
         this.queue = task.queue;
         this.triggerDate = task.triggerDate;
-        this.payload = task.payload;
+        this.payload = task.payload.getAsMap();
     }
 }

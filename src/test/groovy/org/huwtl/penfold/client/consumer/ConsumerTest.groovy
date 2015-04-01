@@ -21,9 +21,9 @@ class ConsumerTest extends Specification {
 
     static final failureReason = Optional.of("err")
 
-    static final readyTask1 = new Task(new TaskId("t1"), "1", queueId, READY, LocalDateTime.now(), 0, LocalDateTime.now(), new Payload([:]))
+    static final readyTask1 = new Task(new TaskId("t1"), "1", queueId, READY, LocalDateTime.now(), 0, new Payload([:]))
 
-    static final readyTask2 = new Task(new TaskId("t2"), "1", queueId, READY, LocalDateTime.now(), 0, LocalDateTime.now(), new Payload([:]))
+    static final readyTask2 = new Task(new TaskId("t2"), "1", queueId, READY, LocalDateTime.now(), 0, new Payload([:]))
 
     static final startedTask1 = readyTask1.builder().withStatus(STARTED).build()
 
@@ -35,7 +35,7 @@ class ConsumerTest extends Specification {
 
     final taskStoreService = Mock(TaskStoreService)
 
-    final dateTimeSource = Mock(DateTimeSource)
+    final dateTimeSource = Mock(LocalDateTimeSource)
 
     def now = LocalDateTime.now()
 

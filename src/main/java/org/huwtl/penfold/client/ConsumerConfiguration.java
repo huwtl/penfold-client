@@ -67,12 +67,12 @@ public class ConsumerConfiguration
         checkValid();
 
         final Client client = Client.create();
-        final ObjectMapper objectMapper = new ObjectMapperFactory().create();
+        final ObjectMapper objectMapper = ObjectMapperFactory.create();
 
         final TaskQueryService taskQueryService = new TaskQueryServiceImpl(url, credentials, client, objectMapper);
         final TaskStoreService taskStoreService = new TaskStoreServiceImpl(url, credentials, client, objectMapper);
 
-        final DateTimeSource dateTimeSource = new DateTimeSource();
+        final LocalDateTimeSource dateTimeSource = new LocalDateTimeSource();
 
         final Consumer consumer = new Consumer(queue, function, retryDelay, taskQueryService, taskStoreService, dateTimeSource);
 
