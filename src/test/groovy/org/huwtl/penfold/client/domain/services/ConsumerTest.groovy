@@ -63,8 +63,8 @@ class ConsumerTest extends Specification {
         consumer.consume()
 
         then:
-        1 * taskStoreService.close(startedTask1, empty())
-        1 * taskStoreService.close(startedTask2, empty())
+        1 * taskStoreService.close(startedTask1, Optional.of(CloseResultType.success), empty())
+        1 * taskStoreService.close(startedTask2, Optional.of(CloseResultType.success), empty())
     }
 
     def "should close task on consume failure"()
@@ -80,8 +80,8 @@ class ConsumerTest extends Specification {
         consumer.consume()
 
         then:
-        1 * taskStoreService.close(startedTask1, failureReason)
-        1 * taskStoreService.close(startedTask2, empty())
+        1 * taskStoreService.close(startedTask1, Optional.of(CloseResultType.failure), failureReason)
+        1 * taskStoreService.close(startedTask2, Optional.of(CloseResultType.success), empty())
     }
 
     def "should reschedule task on consume failure when delayed retry applicable"()
@@ -98,7 +98,7 @@ class ConsumerTest extends Specification {
 
         then:
         1 * taskStoreService.reschedule(startedTask1, now.plusSeconds(retryDelayInSeconds), failureReason)
-        1 * taskStoreService.close(startedTask2, empty())
+        1 * taskStoreService.close(startedTask2, Optional.of(CloseResultType.success), empty())
     }
 
     def "should ignore tasks where consumer function updates task status"()
@@ -112,7 +112,7 @@ class ConsumerTest extends Specification {
         consumer.consume()
 
         then:
-        0 * taskStoreService.close(_ as Task, _ as Optional<String>)
+        0 * taskStoreService.close(_ as Task, _ as Optional<CloseResultType>, _ as Optional<String>)
         0 * taskStoreService.reschedule(_ as Task, _ as LocalDateTime, _ as Optional<String>)
         0 * taskStoreService.requeue(_ as Task, _ as Optional<String>)
     }
@@ -145,7 +145,7 @@ class ConsumerTest extends Specification {
         consumer.consume()
 
         then:
-        2 * taskStoreService.close(startedTask1, failureReason) >> {throw new RuntimeException()}
+        2 * taskStoreService.close(startedTask1, Optional.of(CloseResultType.failure), failureReason) >> {throw new RuntimeException()}
         thrown(RuntimeException)
     }
 }

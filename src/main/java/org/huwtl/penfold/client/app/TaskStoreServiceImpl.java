@@ -10,6 +10,7 @@ import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
 import com.theoryinpractise.halbuilder.api.Link;
 import com.theoryinpractise.halbuilder.api.RepresentationFactory;
+import org.huwtl.penfold.client.domain.model.CloseResultType;
 import org.huwtl.penfold.client.domain.services.TaskStoreService;
 import org.huwtl.penfold.client.app.support.Credentials;
 import org.huwtl.penfold.client.app.commands.CancelTaskCommand;
@@ -98,9 +99,9 @@ public class TaskStoreServiceImpl implements TaskStoreService
         return update(task, new CancelTaskCommand(reason), CommandType.CancelTask);
     }
 
-    @Override public Task close(final Task task, final Optional<String> reason) throws ConflictException
+    @Override public Task close(final Task task, final Optional<CloseResultType> resultType, final Optional<String> reason) throws ConflictException
     {
-        return update(task, new CloseTaskCommand(reason), CommandType.CloseTask);
+        return update(task, new CloseTaskCommand(resultType, reason), CommandType.CloseTask);
     }
 
     private Task update(final Task task, final Object command, final CommandType commandType) throws ConflictException

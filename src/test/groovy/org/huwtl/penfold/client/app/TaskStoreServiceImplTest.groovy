@@ -127,7 +127,7 @@ class TaskStoreServiceImplTest extends Specification {
         final postResponse = response(200, "/fixtures/api/close_task_response.json")
 
         when:
-        store.close(createTask(), Optional.of("reason1"))
+        store.close(createTask(), Optional.of(CloseResultType.success), Optional.of("reason1"))
 
         then:
         1 * resourceBuilder.post(ClientResponse.class, _) >> { _, json ->

@@ -19,6 +19,8 @@ import java.util.concurrent.Callable;
 import static com.github.rholder.retry.StopStrategies.stopAfterAttempt;
 import static com.github.rholder.retry.WaitStrategies.fixedWait;
 import static java.util.concurrent.TimeUnit.SECONDS;
+import static org.huwtl.penfold.client.domain.model.CloseResultType.failure;
+import static org.huwtl.penfold.client.domain.model.CloseResultType.success;
 import static org.huwtl.penfold.client.domain.model.ResultType.FAIL;
 import static org.huwtl.penfold.client.domain.model.ResultType.SUCCESS;
 
@@ -115,12 +117,12 @@ public class Consumer
 
     private void success(final Optional<Task> updatedVersionOfTask)
     {
-        taskStoreService.close(updatedVersionOfTask.get(), Optional.empty());
+        taskStoreService.close(updatedVersionOfTask.get(), Optional.of(success), Optional.empty());
     }
 
     private void fail(final Optional<Task> updatedVersionOfTask, final Optional<String> reason)
     {
-        taskStoreService.close(updatedVersionOfTask.get(), reason);
+        taskStoreService.close(updatedVersionOfTask.get(), Optional.of(failure), reason);
     }
 
     private void retry(final Optional<Task> updatedVersionOfTask, final Optional<String> reason)

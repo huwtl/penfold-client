@@ -23,7 +23,9 @@
   "statusLastModified": "2014-03-15 10:35:05",
   "triggerDate": "2015-04-15 10:35:05",
   "created": "2014-03-15 10:35:05",
-  "attempts": 0
+  "attempts": 0,
+  "closeReason": "reason1",
+  "closeResultType": "success"
 }
 
 

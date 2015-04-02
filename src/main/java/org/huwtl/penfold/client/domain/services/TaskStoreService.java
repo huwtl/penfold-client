@@ -1,6 +1,7 @@
 package org.huwtl.penfold.client.domain.services;
 
 import org.huwtl.penfold.client.domain.exceptions.ConflictException;
+import org.huwtl.penfold.client.domain.model.CloseResultType;
 import org.huwtl.penfold.client.domain.model.NewTask;
 import org.huwtl.penfold.client.domain.model.Task;
 
@@ -19,5 +20,5 @@ public interface TaskStoreService
 
     Task cancel(Task task, Optional<String> reason) throws ConflictException;
 
-    Task close(Task task, Optional<String> reason) throws ConflictException;
+    Task close(Task task, Optional<CloseResultType> resultType, Optional<String> reason) throws ConflictException;
 }
