@@ -2,6 +2,10 @@
 
 Java client for [penfold](https://github.com/huwtl/penfold).
 
+## Prerequisites:
+
+* [JVM](https://www.java.com/en/download/) 8+
+
 
 ## Usage
 
